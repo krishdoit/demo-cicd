@@ -1,0 +1,54 @@
+# Terraform folder structure
+.
+├── backend.tf            | S3 backend to store the terraform state
+├── data.tf               | data resources 
+├── ecr-reg-repo.tf       | generates the repo for containerized apps 
+├── local-provisioner     | run the script to setup the local VM with kube config and install   nginx ingress through helm
+│   ├── backend.tf | local provisioner separate s3 folder to store terraform state
+│   └── localexec.tf
+├── main.tf               | main terraform module that use multiple modules (aws-vpc, aws-eks, mgmt server) for provisioning
+├── modules               | tf modules for vpc, eks and mgmt server
+│   ├── aws-eks           | module to setup aws eks cluster
+│   │   ├── data.tf       | data resources
+│   │   ├── eks-cluster-iam-role.tf  | eks cluster iam role 
+│   │   ├── eks-cluster-sg.tf        | eks cluster sg 
+│   │   ├── eks-cluster.tf           | eks cluster launch config and auto scaling
+│   │   ├── eks-node-asg.tf          | eks worker node launch config and auto scaling
+│   │   ├── eks-node-iam-role.tf     | eks worker node iam role
+│   │   ├── eks-node-sg.tf           | eks node sg to control the access from mgmt/provisioning server
+│   │   ├── outputs.tf               | kube config and config map outputs to setup authentication
+│   │   ├── provider.tf              | aws provider
+│   │   ├── vars.tf                  | vars for cluster launch
+│   │   └── versions.tf              | compatible aws api and tf versions
+│   ├── aws-vpc
+│   │   ├── data.tf                  | data resources
+│   │   ├── eks-master-public-subnets-rtb.tf | eks cluster networking details
+│   │   ├── eks-node-private-subnets-rtb.tf  | eks node networking details
+│   │   ├── igw.tf                           | internet gateway to enable internet access for kube api server and mgmt server
+│   │   ├── nat.tf                       | nat gateway is public subnet to enable worker nodes with outbound internet access
+│   │   ├── outputs.tf                        | outputs from vpc modules to use in other modules
+│   │   ├── provider.tf                        | aws provider
+│   │   ├── provisioner-public-subnets-rtb.tf   | mgmt server networking
+│   │   ├── terraform.tfvars                    | sample tfvars file
+│   │   ├── vars.tf                             | variables for module 
+│   │   ├── versions.tf                         
+│   │   └── vpc.tf                               | vpc resources
+│   └── provisioning-server              | mgmt server modules to allow mgmt for devops to connect to eks cluster nodes
+│       ├── data.tf                              | data resources
+│       ├── outputs.tf                           | outputs to display (public ip for mgmt server)
+│       ├── provider.tf                          | aws provider
+│       ├── provisioner-asg.tf                   | provisioner/mgmt server launch config and auto scaling
+│       ├── provisioner-iam-role.tf      | iam instance profile associated with mgmt server for role bases access to resources
+│       └── vars.tf                      | variables for mgmt server
+├── outputs.tf                           | key outputs to connect, configure kube and tls for ingress
+├── provider.tf                          | aws provider
+├── s3-bucket-for-state                  | s3 bucket module for state (to be run first before other resources provision)
+│   └── s3.tf                            | s3 bucket resource
+├── scripts                      | scripts to setup kube config and config map from local VM/workstation and setup ingress controller 
+│   └── nginx-ingress-deploy.sh  | script for kube and ingress controller
+├── srvn-ssh-key.pub              | pub key to be supplied. private key will be used to connect to VMs
+├── ssh-key.tf                    | aws key pair resource
+├── templates             | user data for mgmt server the pre-install the required softwares for devops operations using CI/CD
+│   └── provisioning-server-user-data.tpl
+├── tls-cert.tf           | self-signed tls cert to deploy to ingress resource to terminate ssl at the ingress resouce
+└── vars.tf               | key variables

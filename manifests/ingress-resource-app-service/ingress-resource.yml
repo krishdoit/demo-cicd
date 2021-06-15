@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  name: comryde-app-ingress
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+      - demoapp.comryde.com
+      # This assumes tls-secret exists and the SSL
+      # certificate contains a CN for comrydeapp.comryde.com
+      secretName: tls-cert-ingress
+  rules:
+  - host: demoapp.comryde.com
+    http:
+      paths:
+      - backend:
+          serviceName: comryde-app
+          servicePort: 3000
