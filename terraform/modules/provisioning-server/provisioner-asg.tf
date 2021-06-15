@@ -18,12 +18,12 @@ resource "aws_autoscaling_group" "provisioner-asg" {
   launch_configuration = aws_launch_configuration.provisioner-lc.id
   max_size             = 1
   min_size             = 1
-  name                 = "srvn-prod-provisioner-asg"
+  name                 = "comryde-prod-provisioner-asg"
   vpc_zone_identifier  = var.provisioner_subnet_ids
 
   tag {
     key                 = "Name"
-    value               = "srvn-prod-provisioner-asg"
+    value               = "comryde-prod-provisioner-asg"
     propagate_at_launch = true
   }
   tag {

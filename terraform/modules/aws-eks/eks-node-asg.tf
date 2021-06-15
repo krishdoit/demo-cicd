@@ -37,12 +37,12 @@ resource "aws_autoscaling_group" "eks-asg" {
   launch_configuration = aws_launch_configuration.eks-lc.id
   max_size             = 3
   min_size             = 3
-  name                 = "srvn-prod-eks-asg"
+  name                 = "comryde-prod-eks-asg"
   vpc_zone_identifier  = var.node_subnet_ids
 
   tag {
     key                 = "Name"
-    value               = "srvn-prod-eks-asg"
+    value               = "comryde-prod-eks-asg"
     propagate_at_launch = true
   }
 
