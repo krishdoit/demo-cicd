@@ -21,7 +21,7 @@ env:
 
 jobs:
   build-push-deploy:
-    name: build container from go app and deploy to eks
+    name: build container and deploy to eks
     runs-on: ubuntu-latest
 
     steps:
